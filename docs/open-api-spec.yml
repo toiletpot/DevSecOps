@@ -78,6 +78,8 @@ tags:
     description: Operations related to utensils
   - name: Bars
     description: Operations related to bars
+  - name: Formulas
+    description: Operations related to formulas
 security:
   - user_token: []
 paths:
@@ -2394,6 +2396,56 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /formulas:
+    post:
+      tags:
+        - Formulas
+      summary: Add new math formula
+      operationId: addMathFormula
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormulaRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Formula'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /formulas/{id}/execute:
+    post:
+      tags:
+        - Formulas
+      summary: Add new math formula
+      operationId: executeMathFormula
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormulaExecuteRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/FormulaResult'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -3637,3 +3689,54 @@ components:
           description: 'ULID expiration datetime'
           example: "2023-05-14T21:23:40.000000Z"
           nullable: true
+    FormulaRequest:
+      type: object
+      properties:
+        variables:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: var1
+        formula:
+          type: string
+          example: 1 + $var1 + (10 * 20)
+    Formula:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        variables:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: var1
+        formula:
+          type: string
+          example: 1 + $var1 + (10 * 20)
+    FormulaExecuteRequest:
+      type: object
+      properties:
+        variables:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: var1
+              value:
+                type: string
+                example: 50
+    FormulaResult:
+      type: object
+      properties:
+        result:
+          type: string
+          example: 40
